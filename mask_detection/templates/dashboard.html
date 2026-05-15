@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AI MASK DETECTION SYSTEM</h1>
+
+    <!-- CAMERA -->
+
+    <div class="video-box">
+
+        <img src="{{ url_for('video') }}">
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        <div class="card green">
+
+            <h2>{{ total_mask }}</h2>
+
+            <p>MASK</p>
+
+        </div>
+
+        <div class="card red">
+
+            <h2>{{ total_nomask }}</h2>
+
+            <p>NO MASK</p>
+
+        </div>
+
+    </div>
+
+    <!-- CHART -->
+
+    <div class="chart-box">
+
+        <canvas id="chart"></canvas>
+
+    </div>
+
+    <!-- CHART JS -->
+
+    <script>
+
+        const totalMask = Number("{{ total_mask }}");
+        const totalNoMask = Number("{{ total_nomask }}");
+
+        const ctx = document.getElementById("chart");
+
+        new Chart(ctx, {
+
+            type: "pie",
+
+            data: {
+
+                labels: [
+                    "MASK",
+                    "NO MASK"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        totalMask,
+                        totalNoMask
+                    ],
+
+                    backgroundColor: [
+                        "green",
+                        "red"
+                    ]
+
+                }]
+
+            }
+
+        });
+
+    </script>
+
+    <!-- LOG TABLE -->
+
+    <h2>Violation Logs</h2>
+
+    <table>
+
+        <tr>
+
+            <th>Time</th>
+
+            <th>Status</th>
+
+            <th>Evidence</th>
+
+        </tr>
+
+        {% for log in logs %}
+
+        <tr>
+
+            <td>{{ log.time }}</td>
+
+            <td>{{ log.status }}</td>
+
+            <td>
+
+                <a href="/static/violations/{{ log.image }}"
+                   target="_blank">
+
+                    View Image
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <!-- DOWNLOAD -->
+
+    <a class="download-btn"
+       href="/download">
+
+        DOWNLOAD REPORT
+
+    </a>
+
+</div>
+
+</body>
+
+</html>
