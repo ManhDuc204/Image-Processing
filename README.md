@@ -1,92 +1,371 @@
-😷 AI Mask Detection System
-Hệ thống giám sát và phát hiện khẩu trang theo thời gian thực sử dụng YOLOv8 + Flask, tích hợp cảnh báo âm thanh, lưu ảnh vi phạm và dashboard quản lý trực quan.
+# 😷 AI Mask Detection System using YOLOv8 & Flask
 
-📸 Tính năng chính
+An intelligent real-time face mask detection and monitoring system built with **YOLOv8**, **Flask**, and **OpenCV**.  
+The application detects whether a person is wearing a mask through a webcam stream, triggers audio alerts for violations, automatically stores evidence images, and provides an interactive web dashboard for monitoring and reporting.
 
-🎥 Nhận diện thời gian thực qua webcam với mô hình YOLOv8 tùy chỉnh (best.pt)
-🔴 Cảnh báo âm thanh tự động khi phát hiện người không đeo khẩu trang (cách 2 giây/lần)
-📷 Chụp ảnh bằng chứng tự động và lưu vào thư mục static/violations/ (cách 5 giây/lần)
-📊 Dashboard web hiển thị thống kê, biểu đồ pie và bảng nhật ký vi phạm
-🔐 Xác thực đăng nhập quản trị viên
-📥 Xuất báo cáo CSV chứa toàn bộ nhật ký vi phạm
+---
 
+# 📌 Overview
 
-🗂️ Cấu trúc dự án
+This project was developed to support automated safety monitoring in environments such as:
+
+- Schools
+- Universities
+- Offices
+- Public facilities
+- Smart surveillance systems
+
+The system utilizes a custom-trained **YOLOv8 model** to classify:
+
+- 😷 Mask
+- ❌ No Mask
+
+Detection results are processed in real time and displayed directly through a web-based dashboard.
+
+---
+
+# ✨ Key Features
+
+## 🎥 Real-Time Face Mask Detection
+- Live webcam monitoring using a custom YOLOv8 model (`best.pt`)
+- Real-time object detection with bounding boxes
+- Color-based visualization:
+  - 🟢 Green → Mask Detected
+  - 🔴 Red → No Mask Detected
+
+---
+
+## 🔊 Intelligent Audio Warning System
+- Automatically plays warning sounds when a violation is detected
+- Cooldown mechanism prevents continuous repetitive alerts
+- Configurable sound interval
+
+---
+
+## 📷 Automatic Violation Evidence Capture
+- Automatically captures and stores violation images
+- Images are saved into:
+
+```bash
+static/violations/
+```
+
+- Useful for monitoring, logging, and future analysis
+
+---
+
+## 📊 Interactive Web Dashboard
+The dashboard includes:
+
+- Live camera stream
+- Total Mask / No Mask statistics
+- Real-time pie chart visualization
+- Violation logs table
+- Evidence image preview
+- CSV report export functionality
+
+---
+
+## 🔐 Admin Authentication
+- Secure login system for administrators
+- Restricts unauthorized access to the monitoring dashboard
+
+---
+
+## 📥 CSV Report Export
+- Export all violation records into `.csv` format
+- Compatible with Microsoft Excel and Google Sheets
+
+---
+
+# 🖼️ System Architecture
+
+```text
+Webcam
+   │
+   ▼
+YOLOv8 Detection Model
+   │
+   ├── Mask Detection
+   ├── No Mask Detection
+   │
+   ▼
+Flask Backend Server
+   │
+   ├── Audio Alert
+   ├── Save Violation Images
+   ├── Update Dashboard
+   └── Export Reports
+```
+
+---
+
+# 🗂️ Project Structure
+
+```bash
 mask-detection/
 │
-├── app.py                  # Flask web server (luồng camera + dashboard)
-├── detect.py               # Script chạy độc lập (không cần web)
-├── best.pt                 # Model YOLOv8 đã huấn luyện
-├── requirements.txt        # Các thư viện cần cài
+├── app.py
+├── detect.py
+├── best.pt
+├── requirements.txt
 │
 ├── sounds/
-│   └── Beep.mp3            # Âm thanh cảnh báo
+│   └── Beep.mp3
 │
 ├── static/
-│   ├── styles.css          # Giao diện CSS
-│   └── violations/         # Ảnh vi phạm được lưu tự động
+│   ├── styles.css
+│   └── violations/
 │
 └── templates/
-    ├── login.html          # Trang đăng nhập
-    ├── dashboard.html      # Trang dashboard chính
-    └── index.html          # Trang chủ (tuỳ chọn)
+    ├── login.html
+    ├── dashboard.html
+    └── index.html
+```
 
-⚙️ Cài đặt
-1. Clone repository
-bashgit clone https://github.com/your-username/mask-detection.git
+---
+
+# 📁 File Descriptions
+
+| File / Folder | Description |
+|---|---|
+| `app.py` | Main Flask application |
+| `detect.py` | Standalone detection script |
+| `best.pt` | Custom-trained YOLOv8 model |
+| `requirements.txt` | Required Python libraries |
+| `sounds/Beep.mp3` | Alert sound |
+| `static/violations/` | Stored violation images |
+| `templates/` | HTML templates |
+
+---
+
+# ⚙️ Installation Guide
+
+## 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/mask-detection.git
 cd mask-detection
-2. Tạo môi trường ảo (khuyến nghị)
-bashpython -m venv venv
+```
 
-# Windows
+---
+
+## 2️⃣ Create Virtual Environment
+
+### Windows
+
+```bash
+python -m venv venv
 venv\Scripts\activate
+```
 
-# macOS / Linux
+### macOS / Linux
+
+```bash
+python3 -m venv venv
 source venv/bin/activate
-3. Cài đặt thư viện
-bashpip install -r requirements.txt
-4. Chuẩn bị file
+```
 
-Đặt file model best.pt vào thư mục gốc của dự án
-Đặt file âm thanh Beep.mp3 vào thư mục sounds/
+---
 
+## 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4️⃣ Prepare Required Files
+
+Make sure the following files exist:
+
+```bash
 mask-detection/
-├── best.pt         ✅
+├── best.pt
 ├── sounds/
-│   └── Beep.mp3    ✅
+│   └── Beep.mp3
+```
 
-🚀 Chạy ứng dụng
-Chế độ Web Dashboard (Flask)
-bashpython app.py
-Sau đó mở trình duyệt và truy cập: http://127.0.0.1:5000
-Thông tinGiá trịUsernameadminPassword123456
-Chế độ Standalone (chạy trực tiếp, không cần web)
-bashpython detect.py
-Nhấn Q để thoát và xuất báo cáo bao_cao_vi_pham.csv.
+---
 
-📊 Hướng dẫn sử dụng Dashboard
+# 🚀 Running the Application
 
-Truy cập http://127.0.0.1:5000 → Đăng nhập với tài khoản admin
-Camera stream hiển thị trực tiếp với khung nhận diện màu xanh (đeo khẩu trang) / đỏ (không đeo)
-Thẻ thống kê cập nhật tổng số lượt Mask / No Mask từ khi khởi động
-Biểu đồ Pie trực quan hóa tỉ lệ tuân thủ
-Bảng Violation Logs ghi nhận thời gian, trạng thái và ảnh bằng chứng từng vi phạm
-Nhấn DOWNLOAD REPORT để tải file CSV
+# 🌐 Flask Web Dashboard Mode
 
+```bash
+python app.py
+```
 
-🛠️ Công nghệ sử dụng
-Thành phầnCông nghệAI ModelYOLOv8 (Ultralytics)Web FrameworkFlaskComputer VisionOpenCVXử lý dữ liệuPandasÂm thanhPygameFrontend ChartChart.js
+Open your browser and visit:
 
-⚠️ Lưu ý
+```bash
+http://127.0.0.1:5000
+```
 
-Ứng dụng sử dụng webcam mặc định (device index 0). Nếu có nhiều camera, chỉnh cv2.VideoCapture(0) thành index tương ứng.
-Biến total_mask và total_nomask trong app.py được đếm tích lũy theo frame, không phải theo người riêng lẻ.
-Chạy trong môi trường có đủ ánh sáng để đạt độ chính xác tốt nhất.
-Nếu không tìm thấy file âm thanh, hệ thống vẫn hoạt động bình thường ở chế độ im lặng.
+---
 
+## 🔑 Default Login Credentials
 
-📄 License
-Dự án này được phát hành theo giấy phép MIT License.
+| Username | Password |
+|---|---|
+| admin | 123456 |
 
-🙌 Đóng góp
-Pull request và issues luôn được chào đón! Nếu bạn muốn cải thiện độ chính xác của model hoặc thêm tính năng mới, hãy tạo issue để thảo luận trước.
+---
+
+# 💻 Standalone Detection Mode
+
+```bash
+python detect.py
+```
+
+### Features:
+- Runs detection without Flask
+- Press `Q` to exit
+- Automatically exports:
+
+```bash
+bao_cao_vi_pham.csv
+```
+
+---
+
+# 📊 Dashboard Features
+
+The monitoring dashboard provides:
+
+✅ Live Camera Streaming  
+✅ Detection Statistics  
+✅ Pie Chart Visualization  
+✅ Violation Logs  
+✅ Image Evidence Management  
+✅ CSV Report Download  
+
+---
+
+# 🛠️ Technologies Used
+
+| Component | Technology |
+|---|---|
+| AI Detection Model | YOLOv8 (Ultralytics) |
+| Backend Framework | Flask |
+| Computer Vision | OpenCV |
+| Data Processing | Pandas |
+| Frontend Charts | Chart.js |
+| Audio Processing | Pygame |
+| Programming Language | Python |
+
+---
+
+# ⚡ Detection Workflow
+
+1. Webcam captures video frames
+2. YOLOv8 processes each frame
+3. System detects:
+   - Mask
+   - No Mask
+4. If violation detected:
+   - Play alert sound
+   - Save violation image
+   - Update dashboard
+   - Record violation logs
+5. Data can be exported into CSV reports
+
+---
+
+# 📸 Detection Preview
+
+## Mask Detected
+- Green bounding box
+- Label: `Mask`
+
+## No Mask Detected
+- Red bounding box
+- Label: `No Mask`
+- Audio warning activated
+- Violation image stored automatically
+
+---
+
+# ⚠️ Important Notes
+
+- The system uses the default webcam:
+
+```python
+cv2.VideoCapture(0)
+```
+
+Change the index if multiple cameras are connected.
+
+---
+
+- Detection accuracy improves significantly under good lighting conditions.
+
+---
+
+- `total_mask` and `total_nomask` are counted per detection frame, not per unique individual.
+
+---
+
+- If the alert sound file is missing, the system will continue operating silently.
+
+---
+
+# 🔮 Future Improvements
+
+Possible future enhancements include:
+
+- 📡 IP Camera / CCTV integration
+- ☁️ Cloud database support
+- 📱 Telegram or Email notifications
+- 👥 Multi-person tracking
+- 🧠 Face Recognition integration
+- 📈 Advanced analytics dashboard
+- 🏢 Enterprise deployment support
+
+---
+
+# 📚 Requirements
+
+Example dependencies:
+
+```txt
+flask
+opencv-python
+ultralytics
+pygame
+pandas
+numpy
+```
+
+---
+
+# 📄 License
+
+This project is released under the MIT License.
+
+---
+
+# 🙌 Contributions
+
+Contributions are welcome!
+
+Feel free to:
+- Open Issues
+- Submit Pull Requests
+- Suggest Improvements
+- Report Bugs
+
+---
+
+# ⚠️ Disclaimer
+
+This project is developed for educational, research, and monitoring purposes only.  
+It is not intended to replace official medical procedures or public health regulations.
+
+---
+
+# 👨‍💻 Author
+
+Nguyen Manh Duc
+Faculty of Information Technology
